@@ -1,4 +1,3 @@
-// app/auth/layout.tsx
 import { ReactNode } from "react"
 import AuthCheck from "./auth-check"
 

@@ -1,5 +1,3 @@
-// app/auth/sign-up/page.tsx
-// Sign-up page (placeholder)
 "use client"
 
 import { useState, useContext } from "react"

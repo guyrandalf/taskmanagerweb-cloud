@@ -1,5 +1,3 @@
-// app/home/add-task/page.tsx
-// Add task page with local storage
 "use client"
 
 import { useState } from "react"
