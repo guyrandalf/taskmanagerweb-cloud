@@ -1,11 +1,10 @@
-// app/home/page.tsx
-// Task list page with local storage and logout
 "use client"
 
 import { useEffect, useState, useContext } from "react"
 import styles from "./page.module.css"
 import { AuthContext } from "./provider/auth-provider"
 import Link from "next/link"
+import { toast } from "react-hot-toast"
 
 interface Task {
   id: string
@@ -40,9 +39,18 @@ export default function HomePage() {
       task.id === id ? { ...task, done: !task.done } : task
     )
     saveTasks(updatedTasks)
-    if (!tasks.find((t) => t.id === id)?.done) {
-      alert(`Task "${tasks.find((t) => t.id === id)?.name}" completed!`)
+    const task = tasks.find((t) => t.id === id)
+    if (task && !task.done) {
+      toast.success(`Task "${task.name}" completed!`)
     }
+  }
+
+  const deleteTask = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent triggering toggleTask
+    const task = tasks.find((t) => t.id === id)
+    const updatedTasks = tasks.filter((task) => task.id !== id)
+    saveTasks(updatedTasks)
+    toast.success(`Task "${task?.name}" deleted!`)
   }
 
   if (!isAuthenticated) return null
@@ -65,6 +73,12 @@ export default function HomePage() {
             <span className={task.done ? styles.completed : ""}>
               {task.name} (Due: {task.dueDate})
             </span>
+            <button
+              className={styles.deleteButton}
+              onClick={(e) => deleteTask(task.id, e)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>

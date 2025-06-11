@@ -3,6 +3,7 @@
 import { useState } from "react"
 import styles from "./add-task.module.css"
 import { useRouter } from "next/navigation"
+import { toast } from "react-hot-toast"
 
 interface Task {
   id: string
@@ -16,11 +17,11 @@ export default function AddTaskPage() {
   const [name, setName] = useState<string>("")
   const [dueDate, setDueDate] = useState<string>(
     new Date().toISOString().split("T")[0]
-  ) // Default to today
+  )
 
   const saveTask = () => {
     if (!name || !dueDate) {
-      alert("Please fill in all fields")
+      toast.error("Please fill in all fields")
       return
     }
 
@@ -34,8 +35,8 @@ export default function AddTaskPage() {
     }
     const updatedTasks = [...tasks, newTask]
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+    toast.success("Task added successfully!")
     router.push("/")
-    alert("Task added successfully!")
   }
 
   return (

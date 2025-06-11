@@ -1,5 +1,3 @@
-// app/auth/sign-in/page.tsx
-// Sign-in page with local storage auth
 "use client"
 
 import { useState, useContext } from "react"

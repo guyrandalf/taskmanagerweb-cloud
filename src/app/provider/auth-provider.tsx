@@ -3,6 +3,7 @@
 import { ReactNode, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createContext } from "react"
+import { toast } from "react-hot-toast"
 
 interface AuthContextType {
   isAuthenticated: boolean
@@ -30,13 +31,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (
       users.some((user: { username: string }) => user.username === username)
     ) {
-      alert("Username already exists")
+      toast.error("Username already exists")
       return
     }
 
     users.push({ username, password })
     localStorage.setItem("users", JSON.stringify(users))
-    alert("Sign up successful! Please login.")
+    toast.success("Sign up successful! Please login.")
     router.push("/auth/sign-in")
   }
 
@@ -52,7 +53,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setIsAuthenticated(true)
       router.push("/")
     } else {
-      alert("Invalid credentials")
+      toast.error("Invalid credentials")
     }
   }
 
