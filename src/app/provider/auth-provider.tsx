@@ -6,6 +6,7 @@ import { createContext } from "react"
 import { toast } from "react-hot-toast"
 import { createClient } from "@/app/utils/supabase/client"
 import { User } from "@supabase/supabase-js"
+import { createUser } from "@/app/actions/auth"
 
 // Interface defining the shape of our authentication context
 // Includes authentication state, user info, and auth methods
@@ -57,23 +58,39 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
    */
   const signup = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      // First attempt to create Supabase auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
       })
 
-      if (error) {
-        toast.error(error.message)
+      if (authError) {
+        toast.error(authError.message)
         return
+      }
+
+      // Only proceed with Prisma user creation if auth was successful
+      if (authData.user) {
+        const { success, error } = await createUser(authData.user.id, email)
+
+        if (!success) {
+          // If Prisma fails, cleanup by deleting the Supabase user
+          await supabase.auth.admin.deleteUser(authData.user.id)
+          toast.error(error || "Failed to create user profile")
+          return
+        }
       }
 
       toast.success(
         "Sign up successful! Please check your email for verification."
       )
       router.push("/auth/sign-in")
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("An error occurred during sign up")
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred during sign up"
+      )
     }
   }
 

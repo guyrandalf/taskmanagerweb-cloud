@@ -3,14 +3,15 @@
 import { useState, useContext } from "react"
 import styles from "./sign-in.module.css"
 import { AuthContext } from "@/app/provider/auth-provider"
+import Link from "next/link"
 
 export default function SignInPage() {
-  const [username, setUsername] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const { login } = useContext(AuthContext) || {}
 
   const handleLogin = () => {
-    if (login) login(username, password)
+    if (login) login(email, password)
   }
 
   return (
@@ -19,9 +20,9 @@ export default function SignInPage() {
       <input
         type="text"
         className={styles.input}
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"
@@ -33,6 +34,9 @@ export default function SignInPage() {
       <button className={styles.button} onClick={handleLogin}>
         Sign In
       </button>
+      <Link href="/auth/sign-up" className={styles.link}>
+        Go to Sign Up
+      </Link>
     </div>
   )
 }

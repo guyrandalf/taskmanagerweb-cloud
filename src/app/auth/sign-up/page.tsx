@@ -3,15 +3,16 @@
 import { useState, useContext } from "react"
 import styles from "./sign-up.module.css"
 import { AuthContext } from "@/app/provider/auth-provider"
+import Link from "next/link"
 
 export default function SignUpPage() {
-  const [username, setUsername] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const { signup } = useContext(AuthContext) || {}
 
   const handleSignUp = () => {
-    if (username && password) {
-      if (signup) signup(username, password)
+    if (email && password) {
+      if (signup) signup(email, password)
     } else {
       alert("Please fill all fields")
     }
@@ -21,11 +22,11 @@ export default function SignUpPage() {
     <div className={styles.container}>
       <h1 className={styles.title}>Sign Up</h1>
       <input
-        type="text"
+        type="email"
         className={styles.input}
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"
@@ -37,6 +38,9 @@ export default function SignUpPage() {
       <button className={styles.button} onClick={handleSignUp}>
         Sign Up
       </button>
+      <Link href="/auth/sign-in" className={styles.link}>
+        Go to Sign In
+      </Link>
     </div>
   )
 }

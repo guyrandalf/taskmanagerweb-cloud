@@ -11,17 +11,31 @@ interface Task {
   name: string
   dueDate: string
   done: boolean
+  createdAt: string
+  updatedAt: string
+  userId: string
+}
+
+interface ApiResponse {
+  tasks: Task[]
 }
 
 export default function HomePage() {
-  const { isAuthenticated, logout } = useContext(AuthContext) || {}
+  const { isAuthenticated, logout } = useContext(AuthContext) || {
+    isAuthenticated: false,
+    logout: () => {},
+  }
   const [tasks, setTasks] = useState<Task[]>([])
 
   useEffect(() => {
-    const loadTasks = () => {
-      const data = localStorage.getItem("tasks")
-      if (data) {
-        setTasks(JSON.parse(data))
+    // this useEffect will run to fetch tasks from the server on initial load
+    const loadTasks = async () => {
+      const response = await fetch("/api/fetch-tasks")
+
+      if (response.ok) {
+        const data: ApiResponse = await response.json()
+
+        setTasks(data.tasks)
       } else {
         setTasks([])
       }
@@ -29,11 +43,13 @@ export default function HomePage() {
     loadTasks()
   }, [])
 
+  // this function will save tasks to localStorage and update the state
   const saveTasks = (updatedTasks: Task[]) => {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     setTasks(updatedTasks)
   }
 
+  // this function will be used to toggle the task's done status
   const toggleTask = (id: string) => {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? { ...task, done: !task.done } : task
@@ -64,23 +80,24 @@ export default function HomePage() {
         </button>
       </div>
       <ul className={styles.taskList}>
-        {tasks.map((task) => (
-          <li
-            key={task.id}
-            className={styles.task}
-            onClick={() => toggleTask(task.id)}
-          >
-            <span className={task.done ? styles.completed : ""}>
-              {task.name} (Due: {task.dueDate})
-            </span>
-            <button
-              className={styles.deleteButton}
-              onClick={(e) => deleteTask(task.id, e)}
+        {Array.isArray(tasks) &&
+          tasks.map((task) => (
+            <li
+              key={task.id}
+              className={styles.task}
+              onClick={() => toggleTask(task.id)}
             >
-              Delete
-            </button>
-          </li>
-        ))}
+              <span className={task.done ? styles.completed : ""}>
+                {task.name} (Due: {task.dueDate})
+              </span>
+              <button
+                className={styles.deleteButton}
+                onClick={(e) => deleteTask(task.id, e)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
       </ul>
       <Link href="/add-task" className={styles.addButton}>
         Add New Task

@@ -34,3 +34,12 @@
 .button:hover {
   background-color: #005bb5;
 }
+
+.link {
+  margin-top: 3rem;
+  color: #0070f3;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
