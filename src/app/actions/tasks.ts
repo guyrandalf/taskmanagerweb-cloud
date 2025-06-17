@@ -35,7 +35,11 @@ export async function addTask(formData: { name: string; dueDate: string }) {
     
     revalidatePath("/") // Revalidate the home page to show the new task
     
-    return { success: true, task }
+    return { 
+      success: true, 
+      task,
+      message: "Task added successfully"
+    }
   } catch (error) {
     console.error("Failed to add task:", error)
     return { success: false, error: "Failed to add task" }
@@ -72,7 +76,11 @@ export async function toggleTaskStatus(taskId: string) {
     
     revalidatePath("/")
     
-    return { success: true, task: updatedTask }
+    return { 
+      success: true, 
+      task: updatedTask,
+      message: "Task status updated successfully"
+    }
   } catch (error) {
     console.error("Failed to toggle task status:", error)
     return { success: false, error: "Failed to update task" }
@@ -107,7 +115,10 @@ export async function deleteTask(taskId: string) {
     
     revalidatePath("/")
     
-    return { success: true }
+    return { 
+      success: true,
+      message: "Task deleted successfully"
+    }
   } catch (error) {
     console.error("Failed to delete task:", error)
     return { success: false, error: "Failed to delete task" }

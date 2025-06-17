@@ -4,6 +4,7 @@ import { useEffect, useState, useContext } from "react"
 import styles from "./page.module.css"
 import { AuthContext } from "./provider/auth-provider"
 import Link from "next/link"
+import { deleteTask, toggleTaskStatus } from "./actions/tasks"
 import { toast } from "react-hot-toast"
 
 interface Task {
@@ -25,11 +26,12 @@ export default function HomePage() {
     isAuthenticated: false,
     logout: () => {},
   }
+  const [loading, setLoading] = useState<boolean>(false)
   const [tasks, setTasks] = useState<Task[]>([])
 
-  useEffect(() => {
-    // this useEffect will run to fetch tasks from the server on initial load
-    const loadTasks = async () => {
+  const loadTasks = async () => {
+    setLoading(true)
+    try {
       const response = await fetch("/api/fetch-tasks")
 
       if (response.ok) {
@@ -39,34 +41,41 @@ export default function HomePage() {
       } else {
         setTasks([])
       }
+      setLoading(false)
+    } catch (error) {
+      console.error("Failed to load", error)
     }
+  }
+
+  useEffect(() => {
+    // this useEffect will run to fetch tasks from the server on initial load
     loadTasks()
   }, [])
 
-  // this function will save tasks to localStorage and update the state
-  const saveTasks = (updatedTasks: Task[]) => {
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-    setTasks(updatedTasks)
-  }
-
-  // this function will be used to toggle the task's done status
-  const toggleTask = (id: string) => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === id ? { ...task, done: !task.done } : task
-    )
-    saveTasks(updatedTasks)
-    const task = tasks.find((t) => t.id === id)
-    if (task && !task.done) {
-      toast.success(`Task "${task.name}" completed!`)
+  const handleToggleStatus = async (taskId: string) => {
+    const result = await toggleTaskStatus(taskId)
+    if (result.success) {
+      toast.success(result.message || "Task updated successfully!")
+      // Update the task in the local state
+      setTasks(
+        tasks.map((task) =>
+          task.id === taskId ? { ...task, done: !task.done } : task
+        )
+      )
+    } else {
+      toast.error(result.error || "Failed to update task")
     }
   }
 
-  const deleteTask = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent triggering toggleTask
-    const task = tasks.find((t) => t.id === id)
-    const updatedTasks = tasks.filter((task) => task.id !== id)
-    saveTasks(updatedTasks)
-    toast.success(`Task "${task?.name}" deleted!`)
+  const handleDeleteTask = async (taskId: string) => {
+    const result = await deleteTask(taskId)
+    if (result.success) {
+      toast.success(result.message || "Task deleted successfully")
+      // Remove the task from the local state
+      setTasks(tasks.filter((task) => task.id !== taskId))
+    } else {
+      toast.error(result.error || "Failed to delete task")
+    }
   }
 
   if (!isAuthenticated) return null
@@ -79,29 +88,45 @@ export default function HomePage() {
           Logout
         </button>
       </div>
-      <ul className={styles.taskList}>
-        {Array.isArray(tasks) &&
-          tasks.map((task) => (
-            <li
-              key={task.id}
-              className={styles.task}
-              onClick={() => toggleTask(task.id)}
-            >
-              <span className={task.done ? styles.completed : ""}>
-                {task.name} (Due: {task.dueDate})
-              </span>
-              <button
-                className={styles.deleteButton}
-                onClick={(e) => deleteTask(task.id, e)}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-      </ul>
-      <Link href="/add-task" className={styles.addButton}>
-        Add New Task
-      </Link>
+      {loading ? (
+        <span
+          style={{
+            color: "#000",
+            fontWeight: "bold",
+            fontSize: "16px",
+          }}
+        >
+          Loading...
+        </span>
+      ) : (
+        <>
+          <ul className={styles.taskList}>
+            {Array.isArray(tasks) &&
+              tasks.map((task) => (
+                <li key={task.id} className={styles.task}>
+                  <span
+                    className={task.done ? styles.completed : ""}
+                    onClick={() => handleToggleStatus(task.id)}
+                  >
+                    {task.name} (Due: {task.dueDate})
+                  </span>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteTask(task.id)
+                    }}
+                  >
+                    Delete
+                  </button>
+                </li>
+              ))}
+          </ul>
+          <Link href="/add-task" className={styles.addButton}>
+            Add New Task
+          </Link>
+        </>
+      )}
     </div>
   )
 }
