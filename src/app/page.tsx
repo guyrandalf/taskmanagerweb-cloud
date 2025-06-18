@@ -17,10 +17,6 @@ interface Task {
   userId: string
 }
 
-interface ApiResponse {
-  tasks: Task[]
-}
-
 export default function HomePage() {
   const { isAuthenticated, user, logout } = useContext(AuthContext) || {
     isAuthenticated: false,

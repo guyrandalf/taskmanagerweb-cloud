@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Video Link
 
-https://youtu.be/Yu_KJfvmRbc
+https://youtu.be/42feSot6hWg
 
 ## Overview
 
@@ -48,3 +48,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 # taskmanagerweb-cloud
+
+Supabase: https://supabase.com
+Prisma: https://prisma.io
