@@ -6,7 +6,7 @@ https://youtu.be/Yu_KJfvmRbc
 
 ## Overview
 
-As a software engineer, I’m documenting my development process to build scalable web applications. I created a task management web dashboard where users can log in/out with session checks in local storage, view and complete tasks also from local shorage with strike-through indicators and toast alerts, and add new tasks, all with a responsive UI styled using custom CSS. My purpose is to strengthen my web development skills with NextJS 15 and prepare for future modules like Cloud Databases.
+As a software engineer, I’m documenting my development process to build scalable web applications. I created a task management web dashboard where users can log in/out with session checks in cloud storage (supabase), view and complete tasks also from local shorage with strike-through indicators and toast alerts, and add new tasks, all with a responsive UI styled using custom CSS.
 
 ## Getting Started
 
@@ -47,5 +47,4 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-# taskManagerWeb
 # taskmanagerweb-cloud

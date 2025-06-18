@@ -7,10 +7,11 @@ import { createClient } from "@/app/utils/supabase/server"
 // Helper function to get the current user
 async function getCurrentUser() {
   const supabase = createClient()
-  const { data: { session } } = await (await supabase).auth.getSession()
-  return session?.user
+  const { data } = await (await supabase).auth.getUser()
+  return data?.user
 }
 
+// Function to fetch tasks for the current user
 export async function addTask(formData: { name: string; dueDate: string }) {
   try {
     const user = await getCurrentUser()
@@ -46,6 +47,8 @@ export async function addTask(formData: { name: string; dueDate: string }) {
   }
 }
 
+
+// Function to fetch tasks for the current user
 export async function toggleTaskStatus(taskId: string) {
   try {
     const user = await getCurrentUser()
@@ -87,6 +90,7 @@ export async function toggleTaskStatus(taskId: string) {
   }
 }
 
+// Function to delete a task for the current user
 export async function deleteTask(taskId: string) {
   try {
     const user = await getCurrentUser()

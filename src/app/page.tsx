@@ -22,35 +22,40 @@ interface ApiResponse {
 }
 
 export default function HomePage() {
-  const { isAuthenticated, logout } = useContext(AuthContext) || {
+  const { isAuthenticated, user, logout } = useContext(AuthContext) || {
     isAuthenticated: false,
     logout: () => {},
   }
   const [loading, setLoading] = useState<boolean>(false)
   const [tasks, setTasks] = useState<Task[]>([])
 
-  const loadTasks = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch("/api/fetch-tasks")
-
-      if (response.ok) {
-        const data: ApiResponse = await response.json()
-
-        setTasks(data.tasks)
-      } else {
-        setTasks([])
-      }
-      setLoading(false)
-    } catch (error) {
-      console.error("Failed to load", error)
-    }
-  }
-
   useEffect(() => {
     // this useEffect will run to fetch tasks from the server on initial load
+    const loadTasks = async () => {
+      setLoading(true)
+      try {
+        const userId = user?.id
+        const response = await fetch(`/api/fetch-tasks?userId=${userId}`)
+        const data = await response.json()
+
+        if (data.success) {
+          setTasks(data.tasks)
+          if (data.tasks.length === 0) {
+            toast.error("No tasks found")
+          }
+        } else {
+          setTasks([])
+          toast.error(data.error || "Failed to get tasks")
+        }
+      } catch (error) {
+        console.error("Failed to load tasks", error)
+        setTasks([])
+      } finally {
+        setLoading(false)
+      }
+    }
     loadTasks()
-  }, [])
+  }, [user])
 
   const handleToggleStatus = async (taskId: string) => {
     const result = await toggleTaskStatus(taskId)

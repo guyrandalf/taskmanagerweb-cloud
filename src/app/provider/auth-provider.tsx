@@ -34,9 +34,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Initialize auth state by checking for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session)
-      setUser(session?.user ?? null)
+    supabase.auth.getUser().then(({ data }) => {
+      setIsAuthenticated(!!data)
+      setUser(data?.user ?? null)
     })
 
     // Subscribe to auth state changes to keep local state in sync
