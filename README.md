@@ -30,7 +30,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Development Environment
 
-I used Visual Studio Code as my editor, with TypeScript for type safety and NextJS 15 for the framework. I managed dependencies with npm, used Git/GitHub for version control, and tested the app in the browser with responsive design adjustments.
+I used Visual Studio Code for coding and Git/GitHub for version control. The programming language is TypeScript with NextJS 15 as the framework, and I utilized libraries like @supabase/supabase-js for database interaction and Prisma for ORM, managed with pnpm.
 
 ## Learn More
 
@@ -47,7 +47,14 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-# taskmanagerweb-cloud
+# Useful Websites
 
-Supabase: https://supabase.com
-Prisma: https://prisma.io
+- [Supabase Documentation](https://supabase.com)
+- [Prisma Documentation](https://prisma.io)
+- [Nextjs Documentation](https://nextjs.org)
+
+# Future Work
+
+- Enhance error handling for network issues with Supabase.
+- Add user profile management via Supabase Auth.
+- Implement task deletion confirmation dialogs.
